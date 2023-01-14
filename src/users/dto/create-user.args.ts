@@ -10,4 +10,7 @@ export class CreateUserArgs {
 
   @Field(() => String)
   email: string;
+
+  @Field(() => String)
+  password: string;
 }
