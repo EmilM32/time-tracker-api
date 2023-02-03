@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/models/user.model';
-import { jwtSecret } from './constants';
 import { comparePassword } from '../users/utils';
+import { configService } from '../config/config.service';
 
 @Injectable()
 export class AuthService {
@@ -25,14 +25,16 @@ export class AuthService {
 
   async login(user: User): Promise<{ token: string }> {
     const payload = { email: user.email, id: user.id };
-    const token = this.jwtService.sign(payload, { secret: jwtSecret });
+    const token = this.jwtService.sign(payload, {
+      secret: configService.getJwtSecret(),
+    });
 
     return { token };
   }
 
   async verify(token: string): Promise<User | null> {
     const decoded = this.jwtService.verify(token, {
-      secret: jwtSecret,
+      secret: configService.getJwtSecret(),
     });
 
     const user = this.usersService.findOne(decoded.email);
