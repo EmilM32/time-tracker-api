@@ -9,7 +9,7 @@ import { NewUserInput } from './dto/new-user.input';
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
-    private usersRepository: Repository<UserEntity>,
+    private readonly usersRepository: Repository<UserEntity>,
   ) {}
 
   findAll(): Promise<UserEntity[]> {
