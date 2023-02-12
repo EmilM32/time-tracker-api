@@ -11,9 +11,11 @@ export class AuthResolver {
   async login(@Args('input') input: LoginInput): Promise<LoginResponse> {
     const { email, password } = input;
     const user = await this.authService.validateUser(email, password);
+
     if (!user) {
       throw new Error('Invalid email or password');
     }
+
     const response = await this.authService.login(user);
 
     return response;

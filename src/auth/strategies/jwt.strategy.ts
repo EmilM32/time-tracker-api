@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { User } from '../../users/models/user.model';
 import { UsersService } from '../../users/users.service';
 import { configService } from '../../config/config.service';
 
@@ -15,10 +14,20 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  validate(validationPayload: {
+  async validate(validationPayload: {
     email: string;
-    sub: string;
-  }): Promise<User | null> {
-    return this.usersService.findOne(validationPayload.email);
+    id: number;
+    iat: number;
+    exp: number;
+  }): Promise<boolean> {
+    const { email, exp } = validationPayload;
+    const isTokenExpired = Date.now() < exp;
+
+    if (isTokenExpired) return false;
+
+    const user = await this.usersService.findOne(email);
+    if (!user?.isActive) return false;
+
+    return true;
   }
 }

@@ -27,22 +27,9 @@ export class AuthService {
     const payload = { email: user.email, id: user.id };
     const token = this.jwtService.sign(payload, {
       secret: configService.getJwtSecret(),
+      expiresIn: '1d',
     });
 
     return { token };
-  }
-
-  async verify(token: string): Promise<User | null> {
-    const decoded = this.jwtService.verify(token, {
-      secret: configService.getJwtSecret(),
-    });
-
-    const user = this.usersService.findOne(decoded.email);
-
-    if (!user) {
-      throw new Error('Unable to get the user from decoded token.');
-    }
-
-    return user;
   }
 }
