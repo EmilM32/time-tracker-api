@@ -5,7 +5,8 @@ import { CreateUserArgs } from './dto/create-user.args';
 import { NotFoundException } from '@nestjs/common';
 import { NewUserInput } from './dto/new-user.input';
 import { comparePassword, generateHash } from './utils';
-import { LoginUserInput } from './dto/login-user.input';
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -40,28 +41,7 @@ export class UsersResolver {
     return user;
   }
 
-  @Mutation(() => Boolean, {
-    description: 'Login user',
-  })
-  async logIn(@Args('user') args: LoginUserInput): Promise<boolean> {
-    try {
-      const user = await this.usersService.findOne(args.email);
-
-      if (!user) throw new NotFoundException();
-
-      const isPasswordCorrect = await comparePassword(
-        args.password,
-        user.password,
-      );
-
-      return isPasswordCorrect;
-    } catch (error) {
-      let message = 'Login failed';
-      if (error instanceof Error) message = error.message;
-      throw new Error(message);
-    }
-  }
-
+  @UseGuards(JwtAuthGuard)
   @Query(() => [User], {
     description: 'Get all users',
   })
