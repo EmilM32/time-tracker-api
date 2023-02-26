@@ -20,9 +20,9 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       context.getHandler(),
       context.getClass(),
     ]);
-    if (isPublic) {
-      return true; // allow public routes to pass through
-    }
+
+    if (isPublic) return true; // allow public routes to pass through
+
     return super.canActivate(context); // check JWT token for non-public routes
   }
 }
