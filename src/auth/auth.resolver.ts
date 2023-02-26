@@ -1,4 +1,5 @@
 import { Resolver, Mutation, Args } from '@nestjs/graphql';
+import { Public } from '../decorators';
 import { AuthService } from './auth.service';
 import { LoginInput } from './dto/login.input';
 import { LoginResponse } from './models/login.model';
@@ -7,6 +8,7 @@ import { LoginResponse } from './models/login.model';
 export class AuthResolver {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @Mutation(() => LoginResponse)
   async login(@Args('input') input: LoginInput): Promise<LoginResponse> {
     const { email, password } = input;

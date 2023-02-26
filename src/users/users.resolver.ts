@@ -1,12 +1,10 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { User } from './models/user.model';
 import { UsersService } from './users.service';
-import { CreateUserArgs } from './dto/create-user.args';
 import { NotFoundException } from '@nestjs/common';
 import { NewUserInput } from './dto/new-user.input';
-import { comparePassword, generateHash } from './utils';
-import { UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { generateHash } from './utils';
+import { Public } from '../decorators';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -29,6 +27,7 @@ export class UsersResolver {
     }
   }
 
+  @Public()
   @Mutation(() => User, {
     description: 'Create new user',
   })
@@ -41,7 +40,7 @@ export class UsersResolver {
     return user;
   }
 
-  @UseGuards(JwtAuthGuard)
+  @Public()
   @Query(() => [User], {
     description: 'Get all users',
   })
