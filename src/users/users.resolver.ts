@@ -7,6 +7,7 @@ import { NewUserInput } from './dto/new-user.input';
 import { comparePassword, generateHash } from './utils';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { Public } from '../decorators';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -41,7 +42,7 @@ export class UsersResolver {
     return user;
   }
 
-  @UseGuards(JwtAuthGuard)
+  @Public()
   @Query(() => [User], {
     description: 'Get all users',
   })
